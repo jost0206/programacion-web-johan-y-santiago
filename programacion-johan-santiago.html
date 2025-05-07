@@ -1,66 +1,96 @@
-more_html = """<!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario de Contacto</title>
-    <link rel="stylesheet" href="contact.css">
+    <style>
+        /* Estilos CSS */
+        h2 {
+            color: rgb(168, 79, 149);
+            background-color: black;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        label, input, textarea {
+            display: block;
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        textarea {
+            height: 150px;
+        }
+
+        button {
+            background-color: rgb(184, 76, 184);
+            border: none;
+            color: black;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: darkgreen;
+            color: white;
+        }
+    </style>
 </head>
 <body>
     <h2>Contáctanos</h2>
-    <form id="contact-form" onsubmit="enviar(); return false;">
+    <form id="contact-form" onsubmit="return enviar();">
         <label for="name">Nombre</label>
-        <input type="text" id="name"><br>
+        <input type="text" id="name" required><br>
 
         <label for="email">Correo</label>
-        <input type="text" id="email"><br>
+        <input type="email" id="email" required><br>
 
         <label for="msg">Mensaje</label>
-        <textarea id="msg"></textarea><br>
+        <textarea id="msg" required></textarea><br>
 
         <button type="submit">Enviar</button>
     </form>
-    <script src="contact.js"></script>
+
+    <script>
+        // JavaScript para validación y manejo de formulario
+        function enviar() {
+            let name = document.getElementById('name').value;
+            let email = document.getElementById('email').value;
+            let msg = document.getElementById('msg').value;
+
+            // Validación del formulario
+            if (!name || !email || !msg) {
+                alert("Por favor, completa todos los campos.");
+                return false;
+            }
+
+            // Validación de formato de email
+            let emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+            if (!emailPattern.test(email)) {
+                alert("Por favor, ingresa un correo electrónico válido.");
+                return false;
+            }
+
+            // Si todo está bien
+            alert("Gracias por contactarnos, " + name + "! Hemos recibido tu mensaje.");
+            return true;  // El formulario se enviará
+        }
+    </script>
 </body>
 </html>
-"""
-
-contact_css = """h2 {
-    color: lime;
-    background-color: black;
-}
-form {
-    width: 150%;
-    padding: 50px;
-}
-label, input, textarea {
-    display: block;
-    margin-bottom: 20px;
-}
-"""
-
-contact_js = """function enviar() {
-    let email = document.getElementById('email').value;
-    alert("Gracias por contactarnos " + email);
-    document.getElementById('msg').textContent="holaejeje";
-}
-"""
-
-# Guardar nuevos archivos
-with open(f"{project_path}/contact.html", "w") as f:
-    f.write(more_html)
-
-with open(f"{project_path}/contact.css", "w") as f:
-    f.write(contact_css)
-
-with open(f"{project_path}/contact.js", "w") as f:
-    f.write(contact_js)
-
-# Reempaquetar el proyecto en un nuevo archivo ZIP
-extended_zip_path = "/mnt/data/Proyecto_Web_Erroneo_Extendido.zip"
-with ZipFile(extended_zip_path, 'w') as zipf:
-    for root, _, files in os.walk(project_path):
-        for file in files:
-            file_path = os.path.join(root, file)
-            zipf.write(file_path, arcname=os.path.relpath(file_path, project_path))
-
-extended_zip_path
-
